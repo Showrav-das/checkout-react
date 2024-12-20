@@ -203,6 +203,9 @@ const Home = () => {
                   >
                     Add to Cart
                   </button>
+                  <button class=" w-4 h-4 text-[#6576FF]">
+                    <i class="far fa-heart"> </i>
+                  </button>
                 </div>
               </div>
             </div>
