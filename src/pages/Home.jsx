@@ -34,8 +34,8 @@ const products = [
 ];
 
 const Home = () => {
-  let totalQuantity = 0;
-  let totalPrice = 0;
+  // let totalQuantity = 0;
+  // let totalPrice = 0;
   const [product, setProduct] = useState({
     bandColor: products[0]?.colorName || "",
     imageSrc: products[0]?.imageSrc || "",
@@ -113,6 +113,20 @@ const Home = () => {
     );
     setCount(0); // Reset count after adding to cart
   };
+  const cartItems = selectedProducts.bandColor.map((color, i) => ({
+    color,
+    imageSrc: selectedProducts.imageSrc[i],
+    size: selectedProducts.size[i],
+    name: selectedProducts.name,
+    quantity: parseInt(selectedProducts.total[i], 10),
+    price: parseInt(selectedProducts.price[i], 10),
+  }));
+
+  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
+  );
   return (
     <>
       <div className="bg-white max-w-7xl mx-auto my-12">
@@ -219,13 +233,13 @@ const Home = () => {
             >
               <span>Checkout</span>
               <span id="total-count" class="bg-white px-2 rounded-lg mt-1">
-                0
+                {totalQuantity}
               </span>
             </button>
           </div>
         )}
         {modalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white overflow-y-auto rounded-lg shadow-lg p-6 w-full max-w-2xl">
               <h1 className="text-2xl font-bold mb-4 text-[#364A63]">
                 Your Cart
@@ -241,42 +255,28 @@ const Home = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedProducts.bandColor.map((color, i) => {
-                    const quantity = parseInt(selectedProducts.total[i]);
-                    const price = parseInt(selectedProducts.price[i]);
-                    const itemTotalPrice = price * quantity;
-                    console.log("selectedProducts.total[i]", price);
-                    totalQuantity += quantity;
-                    totalPrice += itemTotalPrice;
-
-                    return (
-                      <tr key={i} className="border-b">
-                        <td className="py-4 flex items-center">
-                          <img
-                            alt={selectedProducts.name}
-                            className="w-9 h-9 rounded mr-4"
-                            height="50"
-                            src={selectedProducts.imageSrc[i]}
-                          />
-                          <span className="text-[#364A63]">
-                            {selectedProducts.name}
-                          </span>
-                        </td>
-                        <td className="py-4 text-left text-[#364A63]">
-                          {color}
-                        </td>
-                        <td className="py-4 pr-6 font-semibold text-sm text-[#364A63]">
-                          {selectedProducts.size[i]}
-                        </td>
-                        <td className="py-4 font-semibold text-sm text-[#364A63]">
-                          {quantity}
-                        </td>
-                        <td className="py-4 font-semibold text-sm text-right text-[#364A63]">
-                          ${price.toFixed(2)}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {cartItems.map((item, i) => (
+                    <tr key={i} className="border-b">
+                      <td className="py-4 flex items-center">
+                        <img
+                          alt={item.name}
+                          className="w-9 h-9 rounded mr-4"
+                          src={item.imageSrc}
+                        />
+                        <span className="text-[#364A63]">{item.name}</span>
+                      </td>
+                      <td className="py-4 text-[#364A63]">{item.color}</td>
+                      <td className="py-4 pr-6 text-sm font-semibold text-[#364A63]">
+                        {item.size}
+                      </td>
+                      <td className="py-4 text-sm font-semibold text-[#364A63]">
+                        {item.quantity}
+                      </td>
+                      <td className="py-4 text-sm text-right font-semibold text-[#364A63]">
+                        ${item.price.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
                 <tfoot>
                   <tr>
