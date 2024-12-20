@@ -13,7 +13,7 @@ export default function BandColor({ products, setProduct, product, setCount }) {
     <div class="mt-4">
       <span class="text-lg font-bold text-[#364A63]">Band Color</span>
       {/* <!-- radio button --> */}
-      <div id="radio-container" className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mt-3">
         {products.map((option, index) => (
           <label
             key={index}

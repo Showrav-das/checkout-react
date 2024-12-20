@@ -20,7 +20,14 @@ export default function SizesandPrices({ handleButtonClick, currentProduct }) {
               : "border-[#DBDFEA] text-[#364A63]"
           }`}
         >
-          {size} ${price}
+          <span
+            className={
+              currentProduct.size === size ? "text-[#6576FF]" : "text-[#364A63]"
+            }
+          >
+            {size}
+          </span>
+          <span className="text-[#8091A7] text-xs"> ${price}</span>
         </button>
       ))}
     </div>

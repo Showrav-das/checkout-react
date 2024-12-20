@@ -5,7 +5,10 @@ import LightBlueImage from "../images/light-blue-watch.png";
 import CyanImage from "../images/cyan-watch.png";
 import SizesandPrices from "../components/SizesandPrices";
 import BandColor from "../components/BandColor";
+import Modal from "../components/Modal";
+import Header from "../components/Header";
 
+// static products
 const products = [
   {
     bgColor: "#816BFF",
@@ -34,8 +37,6 @@ const products = [
 ];
 
 const Home = () => {
-  // let totalQuantity = 0;
-  // let totalPrice = 0;
   const [product, setProduct] = useState({
     bandColor: products[0]?.colorName || "",
     imageSrc: products[0]?.imageSrc || "",
@@ -49,7 +50,7 @@ const Home = () => {
     total: [],
   });
 
-  // State to track the currently selected product
+  // selected procuct
   const [currentProduct, setCurrentProduct] = useState({
     name: "Classy Modern Smart Watch",
     bandColor: "Light Blue",
@@ -58,6 +59,7 @@ const Home = () => {
     price: 69,
     total: 0,
   });
+  const [modalOpen, isModalOpen] = useState(false);
   console.log("current", currentProduct.bandColor, currentProduct.price);
   // State to track quantity and total price
   const [count, setCount] = useState(0);
@@ -76,14 +78,14 @@ const Home = () => {
     }));
   };
   console.log("total", total);
-  const [modalOpen, isModalOpen] = useState(false);
+
   const handleModal = () => {
     isModalOpen(true);
   };
 
   // Update product count
   const updateCount = (value) => {
-    const newCount = Math.max(count + value, 0); // Prevent count from going negative
+    const newCount = Math.max(count + value, 0); // validate for nagative value
     setCount(newCount);
     setCurrentProduct((prev) => ({
       ...prev,
@@ -111,7 +113,7 @@ const Home = () => {
     setTotal(
       (prevTotal) => prevTotal + currentTotal.price * currentTotal.total
     );
-    setCount(0); // Reset count after adding to cart
+    setCount(0); // reset after adding add to cart
   };
   const cartItems = selectedProducts.bandColor.map((color, i) => ({
     color,
@@ -127,6 +129,7 @@ const Home = () => {
     (sum, item) => sum + item.quantity * item.price,
     0
   );
+
   return (
     <>
       <div className="bg-white max-w-7xl mx-auto my-12">
@@ -146,32 +149,8 @@ const Home = () => {
             </div>
           </div>
           <div class="basis-1/2">
-            <h1 class="text-4xl font-bold text-[#364A63]">
-              Classy Modern Smart watch
-            </h1>
-            <div class="flex items-center mt-3">
-              <div class="flex items-center gap-1 text-[#FFD200]">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-regular fa-star-half-stroke"></i>
-                <i class="fa-regular fa-star"></i>
-              </div>
-              <span class="ml-2 text-[#8091A7]"> (2 Reviews) </span>
-            </div>
-            {/* description */}
-            <div class="mt-4">
-              <span class="text-gray-500 line-through"> $99.00 </span>
-              <span class="text-2xl font-bold text-blue-600 ml-2">
-                {" "}
-                $79.00{" "}
-              </span>
-            </div>
-            <p class="mt-4 text-lg text-[#8091A7]">
-              I must explain to you how all this mistaken idea of denouncing
-              pleasure and praising pain was born and I will give you a complete
-              account of the system, and expound the actual teaching.
-            </p>
+            {/* header part */}
+            <Header />
             <div class="mt-4 flex gap-10">
               <div class="flex flex-col">
                 <span class="text-[#8091A7] text-sm"> Type </span>
@@ -184,6 +163,7 @@ const Home = () => {
                 </span>
               </div>
             </div>
+            {/* band color */}
             <div class="mt-4">
               <BandColor
                 product={product}
@@ -200,19 +180,23 @@ const Home = () => {
 
                 {/* Quantity Control and Add to Cart */}
                 <div className="flex items-center mt-4 gap-4">
-                  <button
-                    onClick={() => updateCount(-1)}
-                    className="px-4 py-2 border border-[#DBDFEA] rounded-lg text-[#8091A7] focus:outline-none"
-                  >
-                    -
-                  </button>
-                  <span className="text-lg text-[#364A63]">{count}</span>
-                  <button
-                    onClick={() => updateCount(1)}
-                    className="px-4 py-2 border border-[#DBDFEA] rounded-lg text-[#8091A7] focus:outline-none"
-                  >
-                    +
-                  </button>
+                  <div className="border flex gap-3  px-4 rounded border-[#DBDFEA]">
+                    <button
+                      onClick={() => updateCount(-1)}
+                      className=" rounded-lg flex-none  text-[#8091A7] focus:outline-none"
+                    >
+                      <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <p className="text-lg flex-1 w-14 text-center py-1 text-[#364A63] border-l border-r">
+                      {count}
+                    </p>
+                    <button
+                      onClick={() => updateCount(1)}
+                      className="flex-none rounded-lg text-[#8091A7] focus:outline-none"
+                    >
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  </div>
                   <button
                     onClick={() => addToCart(currentProduct, product)}
                     className="px-6 py-2 bg-blue-600 text-white rounded-lg"
@@ -238,73 +222,13 @@ const Home = () => {
             </button>
           </div>
         )}
+        {/* modal */}
         {modalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white overflow-y-auto rounded-lg shadow-lg p-6 w-full max-w-2xl">
-              <h1 className="text-2xl font-bold mb-4 text-[#364A63]">
-                Your Cart
-              </h1>
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b text-[#8091A7] text-sm">
-                    <th className="py-2 font-normal">Item</th>
-                    <th className="py-2 font-normal">Color</th>
-                    <th className="py-2 font-normal pr-6">Size</th>
-                    <th className="py-2 font-normal">Qnt</th>
-                    <th className="py-2 font-normal text-right">Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cartItems.map((item, i) => (
-                    <tr key={i} className="border-b">
-                      <td className="py-4 flex items-center">
-                        <img
-                          alt={item.name}
-                          className="w-9 h-9 rounded mr-4"
-                          src={item.imageSrc}
-                        />
-                        <span className="text-[#364A63]">{item.name}</span>
-                      </td>
-                      <td className="py-4 text-[#364A63]">{item.color}</td>
-                      <td className="py-4 pr-6 text-sm font-semibold text-[#364A63]">
-                        {item.size}
-                      </td>
-                      <td className="py-4 text-sm font-semibold text-[#364A63]">
-                        {item.quantity}
-                      </td>
-                      <td className="py-4 text-sm text-right font-semibold text-[#364A63]">
-                        ${item.price.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td
-                      className="py-4 font-semibold text-[#373737]"
-                      colSpan={3}
-                    >
-                      Total
-                    </td>
-                    <td className="py-4 font-bold text-[#364A63]">
-                      {totalQuantity}
-                    </td>
-                    <td className="py-4 font-bold text-right text-[#364A63]">
-                      ${totalPrice.toFixed(2)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-              <div className="flex justify-end gap-6 mt-6">
-                <button className="bg-white text-[#364A63] font-bold text-sm border border-[#DBDFEA] px-4 py-2 rounded">
-                  Continue Shopping
-                </button>
-                <button className="bg-[#6576FF] font-bold text-sm text-white px-[18px] py-2 rounded">
-                  Checkout
-                </button>
-              </div>
-            </div>
-          </div>
+          <Modal
+            cartItems={cartItems}
+            totalPrice={totalPrice}
+            totalQuantity={totalQuantity}
+          />
         )}
       </div>
     </>
